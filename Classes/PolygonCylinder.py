@@ -2,6 +2,7 @@ import math
 import numpy as np
 
 import Classes
+from Classes.Options import Options
 from Classes.Point import Point
 
 
@@ -35,7 +36,10 @@ class PolygonCylinder():
 
     def h(self):
         return self.values['h']
-
+        
+    def number(self):
+        return self.values['number']
+        
     def facets(self):
         return self.values['facets']
         
@@ -60,6 +64,8 @@ class PolygonCylinder():
             self.values['facets'][i] = Point(pt[0], pt[1], pt[2])
 
     def printToCSG(self, f):
+        o = Options()
+        maxhFiller = o.getProperty('maxh_f')
         f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
                                                                         self.values['topCenter'].y(),
                                                                         self.values['topCenter'].z(),
@@ -80,4 +86,5 @@ class PolygonCylinder():
             c = self.c()
             dfc = facet - c
             f.write('{0}, {1}, {2})'.format(dfc.x(), dfc.y(), dfc.z()))
-        f.write(';\ntlo polygonalDisk{0};\n'.format(self.values['number']))
+        f.write(';\ntlo polygonalDisk{0} -maxh={1};\n'.format(self.number(),
+                                                              maxhFiller))
