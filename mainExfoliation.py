@@ -21,40 +21,51 @@ def mainExfoliation():
     maxAttempts = o.getProperty('maxAttempts')
     pcs = []
     l = o.getProperty('cubeEdgeLength')
-    matrixString = 'solid matrix = orthobrick(0, 0, 0; {0}, {0}, {0})'.format(l)
+    matrixString = 'solid matrix = orthobrick(0, 0, 0;'
+    matrixString += ' {0}, {0}, {0})'.format(l)
     attempt = 0
-    r = 0.5
-    h = 0.1
+    v = o.getProperty('verticesNumber')
+    r = o.getProperty('polygonalDiskRadius')
+    h = o.getProperty('polygonalDiskThickness')
     while len(pcs) < desiredDisksNumber and attempt < maxAttempts:
-        print('attempt {0} ready {1} of {2}'.format(attempt, len(pcs), desiredDisksNumber))
+        print('attempt {0} ready {1} of {2}'.format(attempt,
+                                                    len(pcs),
+                                                    desiredDisksNumber))
         attempt += 1
-        pc = PolygonCylinder(r, h, len(pcs))
+        pc = PolygonCylinder(r, h, len(pcs), int(v))
         alpha = random.random() * 2 * math.pi
         beta = random.random() * 2 * math.pi
         gamma = random.random() * 2 * math.pi
+        # rotate around 0x
         pc.changeByMatrix(np.array([
                                     [1, 0, 0, 0],
                                     [0, math.cos(alpha), -math.sin(alpha), 0],
                                     [0, math.sin(alpha), math.cos(alpha), 0],
                                     [0, 0, 0, 1]
                                    ]))
+        # rotate around 0y
         pc.changeByMatrix(np.array([
                                     [math.cos(beta), 0, math.sin(beta), 0],
                                     [0, 1, 0, 0],
                                     [-math.sin(beta), 0, math.cos(beta), 0],
                                     [0, 0, 0, 1]
                                    ]))
+        # rotate around 0z
         pc.changeByMatrix(np.array([
                                     [math.cos(gamma), -math.sin(gamma), 0, 0],
                                     [math.sin(gamma), math.cos(gamma), 0, 0],
                                     [0, 0, 1, 0],
                                     [0, 0, 0, 1]
                                    ]))
+        # translate into random point of the box
+        dx = l * random.random()
+        dy = l * random.random()
+        dz = l * random.random()
         pc.changeByMatrix(np.array([
                                     [1, 0, 0, 0],
                                     [0, 1, 0, 0],
                                     [0, 0, 1, 0],
-                                    [l * random.random(), l * random.random(), l * random.random(), 1]
+                                    [dx, dy, dz, 1]
                                    ]))
         flag = 0
         if boxCross(pc):

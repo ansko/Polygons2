@@ -19,7 +19,7 @@ def boxCross(disk):
         vToFacet = facet - c
         vInFacet = vtb.vectorMultiply(vToFacet)
         realLength = vInFacet.l()
-        needLength = r * math.sin(math.pi / v) 
+        needLength = r * math.tan(math.pi / v) 
         vInFacet = vInFacet * (needLength / realLength)
         x4 = facet + vInFacet
         x5 = facet - vInFacet

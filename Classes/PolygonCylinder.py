@@ -28,7 +28,7 @@ class PolygonCylinder():
         return self.values['botCenter']
 
     def c(self):
-        return self.values['topCenter'] / 2 + self.values['botCenter'] / 2
+        return self.bc() / 2 + self.tc() / 2
 
     def r(self):
         return self.values['r']

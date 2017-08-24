@@ -33,7 +33,7 @@ def disksCross(disk1, disk2):
         vToFacet = Vector(c2, facet)
         vInFacet = vtb2.vectorMultiply(vToFacet)
         realLength = vInFacet.l()
-        needLength = r * math.sin(math.pi / v) 
+        needLength = r * math.tan(math.pi / v) 
         vInFacet = vInFacet * (needLength / realLength)
         x4 = facet + vInFacet
         x5 = facet - vInFacet
@@ -66,7 +66,7 @@ def disksCross(disk1, disk2):
         vToFacet = Vector(c2, facet)
         vInFacet = vtb2.vectorMultiply(vToFacet)
         realLength = vInFacet.l()
-        needLength = r * math.sin(math.pi / v) 
+        needLength = r * math.tan(math.pi / v) 
         vInFacet = vInFacet * (needLength / realLength)
         x4 = facet + vInFacet
         x5 = facet - vInFacet
