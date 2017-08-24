@@ -7,9 +7,11 @@ import random
 from datetime import datetime
 
 import Classes
+from Classes.MatricesPrinter import MatricesPrinter
 from Classes.Options import Options
 from Classes.Point import Point
 from Classes.PolygonCylinder import PolygonCylinder
+from Classes.PropertiesPrinter import PropertiesPrinter
 from Classes.Vector import Vector
 
 import functions
@@ -87,11 +89,10 @@ def mainExfoliation():
     f = open(o.getProperty('fname'), 'w')
     f.write('algebraic3d\n')
     for pc in pcs:
-        v = Vector(pc.bc, pc.tc)
-        
         pc.printToCSG(f)
     f.write(matrixString)
     print('Volume fraction is {}'.format(len(pcs) * math.pi * r**2 * h / l**3))
-    
+    mp = MatricesPrinter(pcs)
+    pp = PropertiesPrinter(pcs)
     
 mainExfoliation()

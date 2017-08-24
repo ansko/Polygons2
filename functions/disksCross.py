@@ -1,7 +1,6 @@
 import math
 import numpy as np
 
-import Classes
 from Classes.Options import Options
 from Classes.Point import Point
 from Classes.Vector import Vector

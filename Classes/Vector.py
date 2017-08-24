@@ -1,5 +1,5 @@
-import Classes
 from Classes.Point import Point
+
 
 class Vector(Point):
     def __init__(self, begin, end):
