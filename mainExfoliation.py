@@ -4,6 +4,7 @@
 import math
 import numpy as np
 import random
+from datetime import datetime
 
 import Classes
 from Classes.Options import Options
@@ -35,6 +36,7 @@ def mainExfoliation():
                                                              desiredDisksNumber))
         attempt += 1
         pc = PolygonCylinder(r, h, len(pcs), int(v))
+        random.seed(datetime.now())
         alpha = random.random() * 2 * math.pi
         beta = random.random() * 2 * math.pi
         gamma = random.random() * 2 * math.pi
