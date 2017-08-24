@@ -3,6 +3,7 @@ import math
 import Classes
 from Classes.Options import Options
 from Classes.Point import Point
+from Classes.Vector import Vector
 
 def boxCross(disk):
     o = Options()
@@ -13,17 +14,13 @@ def boxCross(disk):
     r = disk.r()
     h = disk.h()
     v = len(disk.facets())
-    vtb = tc - bc
+    vtb = Vector(bc, tc)
     for facet in disk.facets():
         vToFacet = facet - c
-        vInFacet = Point(vtb.y() * vToFacet.z() - vtb.z() * vToFacet.y(),
-                         -vtb.x() * vToFacet.z() + vtb.z() * vToFacet.x(),
-                         vtb.x() * vToFacet.y() - vtb.y() * vToFacet.x())
+        vInFacet = vtb.vectorMultiply(vToFacet)
         realLength = vInFacet.l()
         needLength = r * math.sin(math.pi / v) 
-        vInFacet = Point(vInFacet.x() / realLength * needLength,
-                         vInFacet.y() / realLength * needLength,
-                         vInFacet.z() / realLength * needLength)
+        vInFacet = vInFacet * (needLength / realLength)
         x4 = facet + vInFacet
         x5 = facet - vInFacet
         if 0 > x4.x() or 0 > x4.y() or 0 > x4.z() or 0 > x5.x() or 0 > x5.y() or 0 > x5.z():

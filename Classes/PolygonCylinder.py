@@ -61,9 +61,9 @@ class PolygonCylinder():
 
     def printToCSG(self, f):
         f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
-                                                                       self.values['topCenter'].y(),
-                                                                       self.values['topCenter'].z(),
-                                                                       self.values['number']))
+                                                                        self.values['topCenter'].y(),
+                                                                        self.values['topCenter'].z(),
+                                                                        self.values['number']))
         f.write('{0}, {1}, {2}) '.format(self.values['topCenter'].x() - self.values['botCenter'].x(),
                                          self.values['topCenter'].y() - self.values['botCenter'].y(),
                                          self.values['topCenter'].z() - self.values['botCenter'].z()))
@@ -78,7 +78,6 @@ class PolygonCylinder():
                                                         facet.y(),
                                                         facet.z()))
             c = self.c()
-            f.write('{0}, {1}, {2})'.format(facet.x() - c.x(),
-                                            facet.y() - c.y(),
-                                            facet.z() - c.z()))
+            dfc = facet - c
+            f.write('{0}, {1}, {2})'.format(dfc.x(), dfc.y(), dfc.z()))
         f.write(';\ntlo polygonalDisk{0};\n'.format(self.values['number']))
