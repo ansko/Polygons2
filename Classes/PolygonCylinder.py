@@ -15,6 +15,7 @@ class PolygonCylinder():
         self.values['topCenter'] = Point(0, 0, h/2)
         self.values['botCenter'] = Point(0, 0, -h/2)
         self.values['facets'] = []
+        self.values['transformationHistory'] = []
         alpha = 2 * math.pi / v # angle the vertex is seen from center
         for i in range(v):
             facet = Point(r * math.cos(alpha * i), r * math.sin(alpha * i), 0)
@@ -27,9 +28,7 @@ class PolygonCylinder():
         return self.values['botCenter']
 
     def c(self):
-        return Point(self.values['topCenter'].x()/2 + self.values['botCenter'].x()/2,
-                     self.values['topCenter'].y()/2 + self.values['botCenter'].y()/2,
-                     self.values['topCenter'].z()/2 + self.values['botCenter'].z()/2)
+        return self.values['topCenter'] / 2 + self.values['botCenter'] / 2
 
     def r(self):
         return self.values['r']
@@ -40,7 +39,11 @@ class PolygonCylinder():
     def facets(self):
         return self.values['facets']
         
+    def transformationHistory(self):
+        return self.values['transformationHistory']
+        
     def changeByMatrix(self, M):
+        self.values['transformationHistory'].append(M)
         pt = self.values['topCenter']
         pt = np.array([pt.x(), pt.y(), pt.z(), 1])
         pt = np.dot(pt, M)
@@ -78,5 +81,4 @@ class PolygonCylinder():
             f.write('{0}, {1}, {2})'.format(facet.x() - c.x(),
                                             facet.y() - c.y(),
                                             facet.z() - c.z()))
-        #f.write(';\ntlo polygonalDisk{0} -transparent;\n'.format(self.values['number']))
         f.write(';\ntlo polygonalDisk{0};\n'.format(self.values['number']))

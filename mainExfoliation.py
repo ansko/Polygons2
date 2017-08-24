@@ -17,7 +17,7 @@ from functions.disksCross import disksCross
 
 def mainExfoliation():
     o = Options()
-    desiredDisksNumber = o.getProperty('numberOfDisks')
+    desiredDisksNumber = int(o.getProperty('numberOfDisks'))
     maxAttempts = o.getProperty('maxAttempts')
     pcs = []
     l = o.getProperty('cubeEdgeLength')
@@ -26,7 +26,7 @@ def mainExfoliation():
     r = 0.5
     h = 0.1
     while len(pcs) < desiredDisksNumber and attempt < maxAttempts:
-        print('attempt {0} ready {1} of {2}'.format(attempt, len(pcs), 100))
+        print('attempt {0} ready {1} of {2}'.format(attempt, len(pcs), desiredDisksNumber))
         attempt += 1
         pc = PolygonCylinder(r, h, len(pcs))
         alpha = random.random() * 2 * math.pi
@@ -72,4 +72,6 @@ def mainExfoliation():
         pc.printToCSG(f)
     f.write(matrixString)
     print('Volume fraction is {}'.format(len(pcs) * math.pi * r**2 * h / l**3))
+    
+    
 mainExfoliation()
