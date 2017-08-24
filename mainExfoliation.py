@@ -9,6 +9,7 @@ import Classes
 from Classes.Options import Options
 from Classes.Point import Point
 from Classes.PolygonCylinder import PolygonCylinder
+from Classes.Vector import Vector
 
 import functions
 from functions.boxCross import boxCross
@@ -17,6 +18,7 @@ from functions.disksCross import disksCross
 
 def mainExfoliation():
     o = Options()
+    maxhMatrix = o.getProperty('maxh_m')
     desiredDisksNumber = int(o.getProperty('numberOfDisks'))
     maxAttempts = o.getProperty('maxAttempts')
     pcs = []
@@ -28,9 +30,9 @@ def mainExfoliation():
     r = o.getProperty('polygonalDiskRadius')
     h = o.getProperty('polygonalDiskThickness')
     while len(pcs) < desiredDisksNumber and attempt < maxAttempts:
-        print('attempt {0} ready {1} of {2}'.format(attempt,
-                                                    len(pcs),
-                                                    desiredDisksNumber))
+        print('Start of attempt {0} ready {1} of {2}'.format(attempt + 1,
+                                                             len(pcs),
+                                                             desiredDisksNumber))
         attempt += 1
         pc = PolygonCylinder(r, h, len(pcs), int(v))
         alpha = random.random() * 2 * math.pi
@@ -76,10 +78,15 @@ def mainExfoliation():
         if flag == 0:
             pcs.append(pc)
             matrixString += ' and not polygonalDisk' + str(len(pcs) - 1)
-    matrixString += ';\ntlo matrix -transparent;'
+        print('End of attempt   {0} ready {1} of {2}'.format(attempt,
+                                                           len(pcs),
+                                                           desiredDisksNumber))
+    matrixString += ';\ntlo matrix -transparent -maxh={0};'.format(maxhMatrix)
     f = open(o.getProperty('fname'), 'w')
     f.write('algebraic3d\n')
     for pc in pcs:
+        v = Vector(pc.bc, pc.tc)
+        
         pc.printToCSG(f)
     f.write(matrixString)
     print('Volume fraction is {}'.format(len(pcs) * math.pi * r**2 * h / l**3))
