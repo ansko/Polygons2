@@ -7,6 +7,31 @@ class Vector(Point):
         self.values['begin'] = begin
         self.values['end'] = end
         
+    def __add__(self, otherPoint):
+        return Vector(Point(0, 0, 0), Point(self.x() + otherPoint.x(), 
+                                            self.y() + otherPoint.y(),
+                                            self.z() + otherPoint.z()))
+                     
+    def _radd__(self, otherPoint):
+        return Vector(Point(0, 0, 0), Point(self.x() + otherPoint.x(), 
+                                            self.y() + otherPoint.y(),
+                                            self.z() + otherPoint.z()))
+                     
+    def __sub__(self, otherPoint):
+        return Vector(Point(0, 0, 0), Point(self.x() - otherPoint.x(),
+                                            self.y() - otherPoint.y(),
+                                            self.z() - otherPoint.z()))
+                     
+    def __mul__(self, coefficient):
+        return Vector(Point(0, 0, 0), Point(self.x() * coefficient,
+                                            self.y() * coefficient,
+                                            self.z() * coefficient))
+                     
+    def __truediv__(self, coefficient):
+        return Vector(Point(0, 0, 0), Point(self.x() / coefficient,
+                                            self.y() / coefficient,
+                                            self.z() / coefficient))   
+
     def x(self):
         return self.values['end'].x() - self.values['begin'].x()
 

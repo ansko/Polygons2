@@ -5,6 +5,7 @@ from Classes.Options import Options
 from Classes.Point import Point
 from Classes.Vector import Vector
 
+
 def disksCross(disk1, disk2):
     o = Options()
     epsilon = o.getProperty('roughEpsilon')
@@ -21,13 +22,8 @@ def disksCross(disk1, disk2):
         return False
     elif h > l:
         return True
-    # facet of disk2 and top of disk1
+    # facet of disk2 and top or bottom of disk1
     vtb1 = Vector(bc1, tc1)
-    x1 = c1 + vtb1 / 2
-    x2 = disk1.facets()[0] + vtb1 / 2
-    x3 = disk1.facets()[1] + vtb1 / 2
-    v12 = Vector(x2, x1)
-    v32 = Vector(x2, x3)
     tc2 = disk2.tc()
     bc2 = disk2.bc()
     vtb2 = Vector(bc2, tc2)
@@ -37,6 +33,8 @@ def disksCross(disk1, disk2):
                          (c1 - vtb1 / 2,                 # bottom
                           disk1.facets()[0] - vtb1 / 2,
                           disk1.facets()[1] - vtb1 / 2)]:
+        v12 = Vector(x2, x1)
+        v32 = Vector(x2, x3)
         for facet in disk2.facets():
             vToFacet = Vector(c2, facet)
             vInFacet = vtb2.vectorMultiply(vToFacet)
@@ -65,8 +63,9 @@ def disksCross(disk1, disk2):
                         return True
                     if Vector(x1, x5).l() < r / math.cos(math.pi / v):
                         return True
-                elif det1 < -epsilon:
+                    #return True
+                elif det1 * det2 < -epsilon:
                     v45 = Vector(x4, x5)
-                    if Vector(x1, x4 + v45 * abs(det1) / (abs(det1) + abs(det2))).length < r:
+                    if Vector(x1, x4 + v45 * abs(det1) / (abs(det1) + abs(det2))).l() < r:
                         return True
     return False

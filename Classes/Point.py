@@ -19,10 +19,6 @@ class Point():
         return Point(self.x() - otherPoint.x(),
                      self.y() - otherPoint.y(),
                      self.z() - otherPoint.z())
-    def __sub__(self, otherPoint):
-        return Point(self.x() - otherPoint.x(),
-                     self.y() - otherPoint.y(),
-                     self.z() - otherPoint.z())
                      
     def __mul__(self, coefficient):
         return Point(self.x() * coefficient,
