@@ -84,31 +84,28 @@ def mainExfoliation():
                 flag = 1
                 break
         if flag == 0:
-            #for oldPc in pcs:
-            #    if disksInTheShellCross(oldPc, pc):
-            #        oldPc.addNeighbor(pc.number(), True)
-            #        pc.addNeighbor(oldPc.number(), False)
             pcs.append(pc)
             matrixString += ' and not polygonalDisk' + str(len(pcs) - 1) + ' and not pdShell' + str(len(pcs) - 1)
         print('End of attempt   {0} ready {1} of {2}'.format(attempt,
                                                            len(pcs),
                                                            desiredDisksNumber))
-    matrixString += ';\ntlo matrix -transparent -maxh={0};'.format(maxhMatrix)
+    matrixString += ';\ntlo matrix -transparent -maxh={0};\n'.format(maxhMatrix)
     f = open(o.getProperty('fname'), 'w')
     f.write('algebraic3d\n')
-    fillerString = 'solid filler = orthobrick(0, 0, 0;'
-    fillerString += ' {0}, {0}, {0})'.format(l)
-    shellString = 'solid shell = orthobrick(0, 0, 0;'
-    shellString += ' {0}, {0}, {0})'.format(l)
-    for i, pc in enumerate(pcs):
-        pc.printToCSG(f)
-        fillerString += ' and polygonalDisk{0}'.format(i)
-        shellString += ' and pdShell{0}'.format(i)
-    fillerString += ';\ntlo filler -maxh={0};'.format(maxhFiller)
-    shellString += ';\ntlo shell -maxh={0};'.format(maxhShell)
+    if len(pcs) > 0:
+        fillerString = 'solid filler = polygonalDisk0'
+        shellString = 'solid shell = pdShell0'
+        for i, pc in enumerate(pcs):
+            pc.printToCSG(f)
+            if i == 0:
+                continue
+            fillerString += ' or polygonalDisk{0}'.format(i)
+            shellString += ' or pdShell{0}'.format(i)
+        fillerString += ';\ntlo filler -maxh={0};\n'.format(maxhFiller)
+        shellString += ';\ntlo shell -maxh={0};\n'.format(maxhShell)
+        f.write(fillerString)
+        f.write(shellString)
     f.write(matrixString)
-    f.write(fillerString)
-    f.write(shellString)
     print('Volume fraction is {}'.format(len(pcs) * math.pi * r**2 * h / l**3))
     mp = MatricesPrinter(pcs)
     pp = PropertiesPrinter(pcs)
