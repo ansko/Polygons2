@@ -6,9 +6,10 @@ from Classes.Point import Point
 from Classes.Vector import Vector
 
 
-def disksCross(disk1, disk2):
+def disksInTheShellCross(disk1, disk2):
     o = Options()
     epsilon = o.getProperty('roughEpsilon')
+    s = o.getProperty('shellThickness')
     c1 = disk1.c()
     tc1 = disk1.tc()
     bc1 = disk1.bc()
@@ -18,15 +19,17 @@ def disksCross(disk1, disk2):
     r = disk1.r()
     h = disk1.h()
     v = len(disk1.facets())
-    if 2 * (r**2 + h**2 / 4)**0.5 < l**0.5:
+    if 2 * (r**2 + (h / 2 + 2 * s)**2)**0.5 < l**0.5:
         return False
-    elif h > l:
+    elif h + 2 * s > l:
         return True
-    # facet of disk2 and top or bottom of disk1
+    # facet of disk2 and top of disk1
     vtb1 = Vector(bc1, tc1)
+    vtb1 = vtb1 * (2 * s + h) / h
     tc2 = disk2.tc()
     bc2 = disk2.bc()
     vtb2 = Vector(bc2, tc2)
+    vtb2 = vtb2 * (2 * s + h) / h
     for (x1, x2, x3) in [(c1 + vtb1 / 2,                 # top
                           disk1.facets()[0] + vtb1 / 2,
                           disk1.facets()[1] + vtb1 / 2),
@@ -63,8 +66,7 @@ def disksCross(disk1, disk2):
                         return True
                     if Vector(x1, x5).l() < r / math.cos(math.pi / v):
                         return True
-                    #return True
-                elif det1 * det2 < -epsilon:
+                elif det1 < -epsilon:
                     v45 = Vector(x4, x5)
                     if Vector(x1, x4 + v45 * abs(det1) / (abs(det1) + abs(det2))).l() < r:
                         return True
