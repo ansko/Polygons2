@@ -14,6 +14,7 @@ def boxCross(disk):
     h = disk.h()
     v = len(disk.facets())
     vtb = Vector(bc, tc)
+    responce = ''
     for facet in disk.facets():
         vToFacet = facet - c
         vInFacet = vtb.vectorMultiply(vToFacet)
@@ -22,8 +23,28 @@ def boxCross(disk):
         vInFacet = vInFacet * (needLength / realLength)
         x4 = facet + vInFacet
         x5 = facet - vInFacet
-        if 0 > x4.x() or 0 > x4.y() or 0 > x4.z() or 0 > x5.x() or 0 > x5.y() or 0 > x5.z():
-            return True
-        if x4.x() > length or x4.y() > length or x4.z() > length or x5.x() > length or x5.y() > length or x5.z() > length:
-            return True
-    return False
+        if 0 > x4.x() or x5.x() < 0:
+            responce += '1'
+        else:
+            responce += '0'
+        if 0 > x4.y() or x5.y() < 0:
+            responce += '1'
+        else:
+            responce += '0'
+        if 0 > x4.z() or x5.z():
+            responce += '1'
+        else:
+            responce += '0'
+        if x4.x() > length or x5.x() > length:
+            responce += '1'
+        else:
+            responce += '0'
+        if x4.y() > length or x5.y() > length:
+            responce += '1'
+        else:
+            responce += '0'
+        if x4.z() > length or x5.z() > length:
+            responce += '1'
+        else:
+            responce += '0'
+    return responce
