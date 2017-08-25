@@ -22,28 +22,26 @@ class PropertiesPrinter():
              [[[0, 0, 0], [0, 0, 0], [0, 0, 0]],		
               [[0, 0, 0], [0, 0, 0], [0, 0, 0]],		
               [[0, 0, 0], [0, 0, 0], [0, 0, 0]]]]		
-        la = E_f * nu_f / (1.0 - 2 * nu_f) / (1 + nu_f)		
-        mu = E_f / 2 / (1 + nu_f)		
-        for particle in range(len(disks)):		
+        #for particle in range(len(disks)):	
+        if len(disks) > 0:
+            la = E_f * nu_f / (1.0 - 2 * nu_f) / (1 + nu_f)		
+            mu = E_f / 2 / (1 + nu_f)	
             for i in range(3):		
                 for j in range(3):		
                     for k in range(3):		
                         for l in range(3):		
-                            brackets = delta(i, k) * delta(j, l)		
-                            brackets += delta(i, l) * delta(j, k)		
-                            C[i][j][k][l] = (la * delta(i, j) * delta(k, l) + mu * brackets)     		
+                            C[i][j][k][l] = la * delta(i, j) * delta(k, l) + mu * (delta(i, k) * delta(j, l) + delta(i, l) * delta(j, k))  		
                             f.write(str(C[i][j][k][l]) + ' ')
             f.write('\n')
-        la = E_sh * nu_sh / (1.0 - 2 * nu_sh) / (1 + nu_sh)		
-        mu = E_sh / 2 / (1 + nu_sh)		
-        for particle in range(len(disks)):		
+        #for particle in range(len(disks)):
+        if len(disks) > 0:
+            la = E_sh * nu_sh / (1.0 - 2 * nu_sh) / (1 + nu_sh)	
+            mu = E_sh / 2 / (1 + nu_sh)
             for i in range(3):		
                 for j in range(3):		
                     for k in range(3):		
                         for l in range(3):		
-                            brackets = delta(i, k) * delta(j, l)		
-                            brackets += delta(i, l) * delta(j, k)		
-                            C[i][j][k][l] = (la * delta(i, j) * delta(k, l) + mu * brackets)     		
+                            C[i][j][k][l] = la * delta(i, j) * delta(k, l) + mu * (delta(i, k) * delta(j, l) + delta(i, l) * delta(j, k))
                             f.write(str(C[i][j][k][l]) + ' ')
             f.write('\n')
         la = E_m * nu_m / (1.0 - 2 * nu_m) / (1 + nu_m)		
@@ -52,7 +50,5 @@ class PropertiesPrinter():
             for j in range(3):		
                 for k in range(3):		
                     for l in range(3):		
-                        brackets = delta(i, k) * delta(j, l)		
-                        brackets += delta(i, l) * delta(j, k)		
-                        C[i][j][k][l] = (la * delta(i, j) * delta(k, l) + mu * brackets)     		
+                        C[i][j][k][l] = la * delta(i, j) * delta(k, l) + mu * (delta(i, k) * delta(j, l) + delta(i, l) * delta(j, k))     		
                         f.write(str(C[i][j][k][l]) + ' ')

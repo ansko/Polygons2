@@ -20,6 +20,7 @@ class PolygonCylinderInTheShell(PolygonCylinder):
 
     def printToCSG(self, f):
         o = Options()
+        h = o.getProperty('polygonalDiskThickness')
         maxhFiller = o.getProperty('maxh_f')
         f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
                                                                         self.values['topCenter'].y(),
@@ -41,9 +42,9 @@ class PolygonCylinderInTheShell(PolygonCylinder):
             c = self.c()
             dfc = facet - c
             f.write('{0}, {1}, {2})'.format(dfc.x(), dfc.y(), dfc.z()))
-        f.write(';\ntlo polygonalDisk{0} -maxh={1};\n'.format(self.number(),
-                                                              maxhFiller))
-        h = self.h()
+        #f.write(';\ntlo polygonalDisk{0} -maxh={1};\n'.format(self.number(),
+                                                                          #maxhFiller))
+        f.write(';\n')
         s = o.getProperty('shellThickness')
         v = Vector(self.bc(), self.tc())
         v = v * (2 * s + h) / 2 / h
@@ -79,5 +80,5 @@ class PolygonCylinderInTheShell(PolygonCylinder):
         f.write(';\n')
         #f.write('tlo pdShell{0} -maxh={1} -transparent;\n'.format(self.number(),
         #                                                          o.getProperty('maxh_sh')))
-        f.write('tlo pdShell{0} -maxh={1};\n'.format(self.number(),
-                                                     o.getProperty('maxh_sh')))
+        #f.write('tlo pdShell{0} -maxh={1};\n'.format(self.number(),
+        #                                             o.getProperty('maxh_sh')))
