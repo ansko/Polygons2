@@ -76,8 +76,8 @@ class PolygonCylinderInTheShell(PolygonCylinder):
                                                         c.y() + vToFacet.y(),
                                                         c.z() + vToFacet.z()))
             f.write('{0}, {1}, {2})'.format(vToFacet.x(), vToFacet.y(), vToFacet.z()))
-        f.write(' and not polygonalDisk{0}'.format(self.number()))
-        for neighbor in self.values['neighborsAreMainWithMe']:
-            print(neighbor, ' is main with ', self.number())
-            f.write(' and not pdShell{0}'.format(neighbor))
+        #f.write(' and not polygonalDisk{0}'.format(self.number()))
+        #for neighbor in self.values['neighborsAreMainWithMe']:
+        #    print(neighbor, ' is main with ', self.number())
+        #    f.write(' and not pdShell{0}'.format(neighbor))
         f.write(';\n')
