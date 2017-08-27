@@ -154,7 +154,7 @@ def mainExfoliation():
         f.write(fillerString)
         f.write(shellString)
     f.write(matrixString)
-    print('Volume fraction is {}'.format(len(pcs) * math.pi * r**2 * h / l**3))
+    print('Volume fraction is {}'.format(ready * math.pi * r**2 * h / l**3))
     mp = MatricesPrinter(pcs)
     pp = PropertiesPrinter(pcs)
     

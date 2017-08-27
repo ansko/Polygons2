@@ -76,8 +76,29 @@ class PolygonCylinderInTheShell(PolygonCylinder):
                                                         c.y() + vToFacet.y(),
                                                         c.z() + vToFacet.z()))
             f.write('{0}, {1}, {2})'.format(vToFacet.x(), vToFacet.y(), vToFacet.z()))
-        #f.write(' and not polygonalDisk{0}'.format(self.number()))
-        #for neighbor in self.values['neighborsAreMainWithMe']:
-        #    print(neighbor, ' is main with ', self.number())
-        #    f.write(' and not pdShell{0}'.format(neighbor))
         f.write(';\n')
+
+    def findBorders(self):
+        o = Options()
+        minx = miny = minz = 1000000
+        maxx = maxy = maxz = -1000000
+        s = o.getProperty('shellThickness')
+        c = self.c()
+        for facet in self.values['facets']:
+            vToFacet = Vector(self.c(), facet)
+            l = vToFacet.l()
+            vToFacet = vToFacet * ((l + s) / l)
+            realFacet = c + vToFacet
+            if realFacet.x() < minx:
+                minx = realFacet.x()
+            if realFacet.x() > maxx:
+                maxx = realFacet.x()
+            if realFacet.y() < miny:
+                miny = realFacet.y()
+            if realFacet.y() > maxy:
+                maxy = realFacet.y()
+            if realFacet.z() < minz:
+                minz = realFacet.z()
+            if realFacet.z() > maxz:
+                maxz = realFacet.z()
+        return [minx, maxx, miny, maxy, minz, maxz]
