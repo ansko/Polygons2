@@ -16,6 +16,7 @@ from Classes.Vector import Vector
 
 from functions.boxCross import boxCross
 from functions.boxCrossByDiskInTheShell import boxCrossByDiskInTheShell
+from functions.checkPercolation import checkPercolation
 from functions.diskDiskInTheShellCross import diskDiskInTheShellCross
 from functions.disksCross import disksCross
 from functions.disksInTheShellCross import disksInTheShellCross
@@ -37,11 +38,12 @@ def mainExfoliation():
     v = o.getProperty('verticesNumber')
     r = o.getProperty('polygonalDiskRadius')
     h = o.getProperty('polygonalDiskThickness')
+    ready = 0
     tmpPcs = []
-    while len(pcs) / 27 < desiredDisksNumber and attempt < maxAttempts:
-        print('Start of attempt {0} ready {1} of {2}'.format(attempt + 1,
-                                                             len(pcs) / 27,
-                                                             desiredDisksNumber))
+    while ready < desiredDisksNumber and attempt < maxAttempts:
+        #print('Start of attempt {0} ready {1} of {2}'.format(attempt + 1,
+        #                                                     len(pcs) / 27,
+         #                                                    desiredDisksNumber))
         attempt += 1
         if len(pcs) > 0:
             name = int(pcs[len(pcs) - 1].number()) + 1
@@ -105,34 +107,50 @@ def mainExfoliation():
                     flag = 1
                     break
         if flag != 1:
+            ready += 1
             for pc in tmpPcs:
                 pcs.append(pc)
                 
+        toPop = []
+        for i, pc in enumerate(pcs):
+            c = pc.c()
+            if not 0 < c.x() < l or not 0 < c.y() < l or not 0 < c.z() < l:
+                if not boxCrossByDiskInTheShell(pc):
+                    toPop.append(i)
+        for i in toPop[::-1]:
+            pcs.pop(i)
+                
         print('End of attempt   {0} ready {1} of {2}'.format(attempt,
-                                                             len(pcs) / 27,
+                                                             ready,
                                                              desiredDisksNumber))
-    toPop = []
-    for i, pc in enumerate(pcs):
-        c = pc.c()
-        if 0 < c.x() <  l and 0 < c.y() < l and 0 < c.z() < l and not boxCrossByDiskInTheShell(pc):
-            toPop.append(i)
-    for i in toPop[::-1]:
-        pcs.pop(i)
+    print('Removing excess, len is {}'.format(len(pcs)))
+#    toPop = []
+#    for i, pc in enumerate(pcs):
+#        c = pc.c()
+#        if not 0 < c.x() < l or not 0 < c.y() < l or not 0 < c.z() < l:
+#            if not boxCrossByDiskInTheShell(pc):
+#                toPop.append(i)
+#    for i in toPop[::-1]:
+#        pcs.pop(i)
+    print('Checking for percolation len is {}'.format(len(pcs)))
+    checkPercolation(pcs)
     matrixString += ' and not filler and not shell;\ntlo matrix -transparent -maxh={0};\n'.format(maxhMatrix)
     f = open(o.getProperty('fname'), 'w')
     f.write('algebraic3d\n')
     f.write(cellString)
     if len(pcs) > 0:
-        fillerString = 'solid filler = cell and (polygonalDisk0'
-        shellString = 'solid shell = cell and (pdShell0'
+        fillerString = 'solid filler = cell and ('
+        shellString = 'solid shell = cell and ('
         for i, pc in enumerate(pcs):
             pc.printToCSG(f)
-            if i == 0:
-                continue
-            fillerString += ' or polygonalDisk{0}'.format(pc.number())
-            shellString += ' or pdShell{0}'.format(pc.number())
-        fillerString += ');\ntlo filler -maxh={0};\n'.format(maxhFiller)
-        shellString += ');\ntlo shell -maxh={0};\n'.format(maxhShell)
+            if i != 0:
+                fillerString += ' or polygonalDisk{0}'.format(pc.number())
+                shellString += ' or pdShell{0}'.format(pc.number())
+            else:
+                fillerString += ' polygonalDisk{0}'.format(pc.number())
+                shellString += ' pdShell{0}'.format(pc.number())
+        fillerString += ') and orthobrick(0.001,  0.001, 0.001; 9.999, 9.999, 9.999);\ntlo filler -maxh={0};\n'.format(maxhFiller)
+        shellString += ') and not filler and orthobrick(0.001,  0.001, 0.001; 9.999, 9.999, 9.999);\ntlo shell -maxh={0} -transparent;\n'.format(maxhShell)
         f.write(fillerString)
         f.write(shellString)
     f.write(matrixString)
