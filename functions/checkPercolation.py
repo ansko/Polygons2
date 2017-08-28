@@ -14,6 +14,7 @@ def checkPercolation(pcs):
             if i == j:
                 continue
             if disksInTheShellCross(pc1, pc2):
+                print(i, j)
                 crossings[i].append(j)
                 crossings[j].append(i)
     #l = 1

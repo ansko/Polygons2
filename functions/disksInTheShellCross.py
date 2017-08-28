@@ -36,10 +36,17 @@ def disksInTheShellCross(disk1, disk2):
                          (c1 - vtb1 / 2,                 # bottom
                           disk1.facets()[0] - vtb1 / 2,
                           disk1.facets()[1] - vtb1 / 2)]:
+        if not 0 < x1.x() < l or not 0 < x1.y() < l or not 0 < x1.y() < l:
+            continue
+        if not 0 < x2.x() < l or not 0 < x2.y() < l or not 0 < x2.y() < l:
+            continue
+        if not 0 < x3.x() < l or not 0 < x3.y() < l or not 0 < x3.y() < l:
+            continue
         v12 = Vector(x2, x1)
         v32 = Vector(x2, x3)
         for facet in disk2.facets():
             vToFacet = Vector(c2, facet)
+            vToFacet = vToFacet * (r + s) / r
             vInFacet = vtb2.vectorMultiply(vToFacet)
             realLength = vInFacet.l()
             needLength = (r + s) * math.tan(math.pi / v) 
@@ -52,6 +59,10 @@ def disksInTheShellCross(disk1, disk2):
                               c2 + vToFacet - vInFacet + vtb2 / 2),
                              (c2 + vToFacet + vInFacet - vtb2 / 2, # bottom edge
                               c2 + vToFacet - vInFacet - vtb2 / 2)]:
+                if not 0 < x4.x() < l or not 0 < x4.y() < l or not 0 < x4.y() < l:
+                    continue
+                if not 0 < x5.x() < l or not 0 < x5.y() < l or not 0 < x5.y() < l:
+                    continue
                 v42 = Vector(x2, x4)
                 v52 = Vector(x2, x5)
                 det1 = np.linalg.det(np.array([
@@ -70,10 +81,12 @@ def disksInTheShellCross(disk1, disk2):
                         return True
                     if Vector(x1, x5).l() < r / math.cos(math.pi / v):
                         return True
-                elif det1 < -epsilon:
+                else:
                     v45 = Vector(x4, x5)
-                    if Vector(x1, x4 + v45 * abs(det1) / (abs(det1) + abs(det2))).l() < r:
-                        return True
+                    pti = x4 + Vector(x4, x4 + v45 * abs(det1) / (abs(det1) + abs(det2)))
+                    if r + s > Vector(x1, pti).l():
+                        if 0 < pti.x() < l and 0 < pti.y() < l and 0 < pti.y() < l:
+                            return True
     # facet-facet
     for facet1 in disk1.facets():
         vToFacet1 = Vector(c1, facet1)
@@ -84,6 +97,14 @@ def disksInTheShellCross(disk1, disk2):
         x1 = c1 + vToFacet1 * (r + s) / r
         x2 = c1 + vToFacet1 * (r + s) / r + vInFacet1 + vtb1 / 2
         x3 = c1 + vToFacet1 * (r + s) / r + vInFacet1 - vtb1 / 2
+        if not 0 < x1.x() < l or not 0 < x1.y() < l or not 0 < x1.y() < l:
+            continue
+        if not 0 < x2.x() < l or not 0 < x2.y() < l or not 0 < x2.y() < l:
+            continue
+        if not 0 < x3.x() < l or not 0 < x3.y() < l or not 0 < x3.y() < l:
+            continue
+        v12 = Vector(x2, x1)
+        v32 = Vector(x2, x3)
         for facet in disk2.facets():
             vToFacet = Vector(c2, facet)
             vInFacet = vtb2.vectorMultiply(vToFacet)
@@ -94,6 +115,10 @@ def disksInTheShellCross(disk1, disk2):
                               facet - vInFacet + vtb2 / 2),
                              (facet + vInFacet - vtb2 / 2, # bottom edge
                               facet - vInFacet - vtb2 / 2)]:
+                if not 0 < x4.x() < l or not 0 < x4.y() < l or not 0 < x4.y() < l:
+                    continue
+                if not 0 < x5.x() < l or not 0 < x5.y() < l or not 0 < x5.y() < l:
+                    continue
                 v42 = Vector(x2, x4)
                 v52 = Vector(x2, x5)
                 det1 = np.linalg.det(np.array([
@@ -112,8 +137,10 @@ def disksInTheShellCross(disk1, disk2):
                         return True
                     if Vector(x1, x5).l() < r / math.cos(math.pi / v):
                         return True
-                elif det1 < -epsilon:
+                else:
                     v45 = Vector(x4, x5)
-                    if Vector(x1, x4 + v45 * abs(det1) / (abs(det1) + abs(det2))).l() < r:
-                        return True
+                    pti = x4 + v45 * abs(det1) / (abs(det1) + abs(det2))
+                    if Vector(x1, pti).l() < r + s:
+                        if 0 < pti.x() < l and 0 < pti.y() < l and 0 < pti.y() < l:
+                            return True
     return False
