@@ -149,8 +149,8 @@ def mainExfoliation():
             else:
                 fillerString += ' polygonalDisk{0}'.format(pc.number())
                 shellString += ' pdShell{0}'.format(pc.number())
-        fillerString += ') and orthobrick(0.001,  0.001, 0.001; 9.999, 9.999, 9.999);\ntlo filler -maxh={0};\n'.format(maxhFiller)
-        shellString += ') and not filler and orthobrick(0.001,  0.001, 0.001; 9.999, 9.999, 9.999);\ntlo shell -maxh={0} -transparent;\n'.format(maxhShell)
+        fillerString += ') and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo filler -maxh={0};\n'.format(maxhFiller)
+        shellString += ') and not filler and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo shell -maxh={0};\n'.format(maxhShell)
         f.write(fillerString)
         f.write(shellString)
     f.write(matrixString)
