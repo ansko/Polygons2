@@ -19,7 +19,7 @@ def disksInTheShellCross(disk1, disk2):
     r = disk1.r()
     h = disk1.h()
     v = len(disk1.facets())
-    if 2 * (r**2 + (h / 2 + 2 * s)**2)**0.5 < l**0.5:
+    if 2 * (r**2 + (h / 2 + s)**2)**0.5 < l**0.5:
         return False
     elif h + 2 * s > l:
         return True
@@ -42,7 +42,53 @@ def disksInTheShellCross(disk1, disk2):
             vToFacet = Vector(c2, facet)
             vInFacet = vtb2.vectorMultiply(vToFacet)
             realLength = vInFacet.l()
-            needLength = r * math.tan(math.pi / v) 
+            needLength = (r + s) * math.tan(math.pi / v) 
+            vInFacet = vInFacet * (needLength / realLength)
+            #for (x4, x5) in [(facet + vInFacet + vtb2 / 2, # top edge
+            #                  facet - vInFacet + vtb2 / 2),
+            #                 (facet + vInFacet - vtb2 / 2, # bottom edge
+            #                  facet - vInFacet - vtb2 / 2)]:
+            for (x4, x5) in [(c2 + vToFacet + vInFacet + vtb2 / 2, # top edge
+                              c2 + vToFacet - vInFacet + vtb2 / 2),
+                             (c2 + vToFacet + vInFacet - vtb2 / 2, # bottom edge
+                              c2 + vToFacet - vInFacet - vtb2 / 2)]:
+                v42 = Vector(x2, x4)
+                v52 = Vector(x2, x5)
+                det1 = np.linalg.det(np.array([
+                                               [v12.x(), v12.y(), v12.z()],
+                                               [v32.x(), v32.y(), v32.z()],
+                                               [v42.x(), v42.y(), v42.z()]
+                                              ]))
+                det2 = np.linalg.det(np.array([
+                                               [v12.x(), v12.y(), v12.z()],
+                                               [v32.x(), v32.y(), v32.z()],
+                                               [v52.x(), v52.y(), v52.z()]
+                                              ]))
+                if -epsilon < det1 < epsilon or -epsilon < det2 < epsilon :
+                    l = ((r / math.cos(math.pi / v))**2 + h**2 / 4)**0.5
+                    if Vector(x1, x4).l() < r / math.cos(math.pi / v):
+                        return True
+                    if Vector(x1, x5).l() < r / math.cos(math.pi / v):
+                        return True
+                elif det1 < -epsilon:
+                    v45 = Vector(x4, x5)
+                    if Vector(x1, x4 + v45 * abs(det1) / (abs(det1) + abs(det2))).l() < r:
+                        return True
+    # facet-facet
+    for facet1 in disk1.facets():
+        vToFacet1 = Vector(c1, facet1)
+        vInFacet1 = vtb1.vectorMultiply(vToFacet1)
+        realLength1 = vInFacet1.l()
+        needLength1 = (r + s) * math.tan(math.pi / v) 
+        vInFacet1 = vInFacet1 * (needLength1 / realLength1)
+        x1 = c1 + vToFacet1 * (r + s) / r
+        x2 = c1 + vToFacet1 * (r + s) / r + vInFacet1 + vtb1 / 2
+        x3 = c1 + vToFacet1 * (r + s) / r + vInFacet1 - vtb1 / 2
+        for facet in disk2.facets():
+            vToFacet = Vector(c2, facet)
+            vInFacet = vtb2.vectorMultiply(vToFacet)
+            realLength = vInFacet.l()
+            needLength = (r + s) * math.tan(math.pi / v) 
             vInFacet = vInFacet * (needLength / realLength)
             for (x4, x5) in [(facet + vInFacet + vtb2 / 2, # top edge
                               facet - vInFacet + vtb2 / 2),

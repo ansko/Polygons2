@@ -19,7 +19,7 @@ def diskDiskInTheShellCross(disk1, disk2):
     r = disk1.r()
     h = disk1.h()
     v = len(disk1.facets())
-    if 2 * (r**2 + (h / 2 + 2 * s)**2)**0.5 < l**0.5:
+    if 2 * (r**2 + (h / 2 + 2 * s)**2)**0.5 < l:
         return False
     elif h + 2 * s > l:
         return True

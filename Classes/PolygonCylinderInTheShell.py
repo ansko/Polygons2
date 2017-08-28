@@ -12,6 +12,12 @@ class PolygonCylinderInTheShell(PolygonCylinder):
         self.values['neighborsIAmMainWith'] = []
         self.values['neighborsAreMainWithMe'] = []
         
+    def __copy__(self):
+        copy = PolygonCylinderInTheShell(self.r(), self.h(), self.number(), len(self.facets()))
+        for transformation in self.transformationHistory():
+            copy.changeByMatrix(transformation)
+        return copy
+        
     def addNeighbor(self, number, meIsMain=True):
         if meIsMain:
             self.values['neighborsIAmMainWith'].append(number)
@@ -25,7 +31,7 @@ class PolygonCylinderInTheShell(PolygonCylinder):
         f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
                                                                         self.values['topCenter'].y(),
                                                                         self.values['topCenter'].z(),
-                                                                        self.values['number']))
+                                                                        self.number()))
         f.write('{0}, {1}, {2}) '.format(self.values['topCenter'].x() - self.values['botCenter'].x(),
                                          self.values['topCenter'].y() - self.values['botCenter'].y(),
                                          self.values['topCenter'].z() - self.values['botCenter'].z()))
@@ -42,8 +48,6 @@ class PolygonCylinderInTheShell(PolygonCylinder):
             c = self.c()
             dfc = facet - c
             f.write('{0}, {1}, {2})'.format(dfc.x(), dfc.y(), dfc.z()))
-        #f.write(';\ntlo polygonalDisk{0} -maxh={1};\n'.format(self.number(),
-                                                                          #maxhFiller))
         f.write(';\n')
         s = o.getProperty('shellThickness')
         v = Vector(self.bc(), self.tc())
@@ -68,17 +72,33 @@ class PolygonCylinderInTheShell(PolygonCylinder):
             vToFacet = Vector(self.c(), facet)
             l = vToFacet.l()
             vToFacet = vToFacet * ((l + s) / l)
-            #print((l + s) / l)
             f.write(' and plane({0}, {1}, {2}; '.format(c.x() + vToFacet.x(),
                                                         c.y() + vToFacet.y(),
                                                         c.z() + vToFacet.z()))
             f.write('{0}, {1}, {2})'.format(vToFacet.x(), vToFacet.y(), vToFacet.z()))
-        f.write(' and not polygonalDisk{0}'.format(self.number()))
-        for neighbor in self.values['neighborsAreMainWithMe']:
-            print(neighbor, ' is main with ', self.number())
-            f.write(' and not pdShell{0}'.format(neighbor))
         f.write(';\n')
-        #f.write('tlo pdShell{0} -maxh={1} -transparent;\n'.format(self.number(),
-        #                                                          o.getProperty('maxh_sh')))
-        #f.write('tlo pdShell{0} -maxh={1};\n'.format(self.number(),
-        #                                             o.getProperty('maxh_sh')))
+
+    def findBorders(self):
+        o = Options()
+        minx = miny = minz = 1000000
+        maxx = maxy = maxz = -1000000
+        s = o.getProperty('shellThickness')
+        c = self.c()
+        for facet in self.values['facets']:
+            vToFacet = Vector(self.c(), facet)
+            l = vToFacet.l()
+            vToFacet = vToFacet * ((l + s) / l)
+            realFacet = c + vToFacet
+            if realFacet.x() < minx:
+                minx = realFacet.x()
+            if realFacet.x() > maxx:
+                maxx = realFacet.x()
+            if realFacet.y() < miny:
+                miny = realFacet.y()
+            if realFacet.y() > maxy:
+                maxy = realFacet.y()
+            if realFacet.z() < minz:
+                minz = realFacet.z()
+            if realFacet.z() > maxz:
+                maxz = realFacet.z()
+        return [minx, maxx, miny, maxy, minz, maxz]

@@ -16,7 +16,11 @@ def boxCrossByDiskInTheShell(disk):
     v = len(disk.facets())
     vtb = Vector(bc, tc)
     vtb = vtb * (2 * s + h) / h
+    responce = [0 for i in range(6)]
     for facet in disk.facets():
+        ifcrossx = False
+        ifcrossy = False
+        ifcrossz = False
         ptOnFacet = c + (facet - c) / r * (r + s)
         vToFacet = facet - c
         vInFacet = vtb.vectorMultiply(vToFacet)
@@ -27,14 +31,36 @@ def boxCrossByDiskInTheShell(disk):
         x2 = ptOnFacet + vInFacet - vtb / 2
         x3 = ptOnFacet - vInFacet + vtb / 2
         x4 = ptOnFacet - vInFacet - vtb / 2
-        if (0 > x1.x() or 0 > x1.y() or 0 > x1.z() or
-            0 > x2.x() or 0 > x2.y() or 0 > x2.z() or
-            0 > x3.x() or 0 > x3.y() or 0 > x3.z() or
-            0 > x4.x() or 0 > x4.y() or 0 > x4.z()):
-            return True
-        if (x1.x() > length or x1.y() > length or x1.z() > length or
-            x2.x() > length or x2.y() > length or x2.z() > length or
-            x3.x() > length or x3.y() > length or x3.z() > length or
-            x4.x() > length or x4.y() > length or x4.z() > length):
+        if x1.x() * x2.x() < 0 or x1.x() * x3.x() < 0 or x1.x() * x4.x() < 0:
+            ifcrossx = True
+        if (x1.x() - length) * (x2.x() - length) < 0 or (x1.x() - length) * (x3.x() - length) < 0 or (x1.x() - length) * (x4.x() - length) < 0:
+            ifcrossx = True
+        if x1.y() * x2.y() < 0 or x1.y() * x3.y() < 0 or x1.y() * x4.y() < 0:
+            ifcrossy = True
+        if (x1.y() - length) * (x2.y() - length) < 0 or (x1.y() - length) * (x3.y() - length) < 0 or (x1.y() - length) * (x4.y() - length) < 0:
+            ifcrossy = True
+        if x1.z() * x2.z() < 0 or x1.z() * x3.z() < 0 or x1.z() * x4.z() < 0:
+            ifcrossz = True
+        if (x1.z() - length) * (x2.z() - length) < 0 or (x1.z() - length) * (x3.z() - length) < 0 or (x1.z() - length) * (x4.z() - length) < 0:
+            ifcrossz = True
+        if ifcrossx and not ifcrossy and not ifcrossz:
+            if 0 < c.y() < length and 0 < c.z() < length:
+                return True
+        if ifcrossy and not ifcrossx and not ifcrossz:
+            if 0 < c.x() < length and 0 < c.z() < length:
+                return True
+        if ifcrossz and not ifcrossy and not ifcrossx:
+            if 0 < c.y() < length and 0 < c.x() < length:
+                return True
+        if ifcrossx and ifcrossy and not ifcrossz:
+            if 0 < c.z() < length:
+                return True
+        if ifcrossx and ifcrossz and not ifcrossy:
+            if 0 < c.y() < length:
+                return True
+        if ifcrossz and ifcrossy and not ifcrossx:
+            if 0 < c.x() < length:
+                return True
+        if ifcrossx and ifcrossy and ifcrossz:
             return True
     return False

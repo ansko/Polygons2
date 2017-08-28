@@ -16,10 +16,20 @@ class PolygonCylinder():
         self.values['botCenter'] = Point(0, 0, -h/2)
         self.values['facets'] = []
         self.values['transformationHistory'] = []
+        self.values['copied'] = 0
         alpha = 2 * math.pi / v # angle the vertex is seen from center
         for i in range(v):
             facet = Point(r * math.cos(alpha * i), r * math.sin(alpha * i), 0)
             self.values['facets'].append(facet)
+            
+    def __copy__(self):
+        copy = PolygonCylinder(self.r(), self.h(), self.number(), len(self.facets()))
+        for transformation in self.transformationHistory():
+            copy.changeByMatrix(transformation)
+        return copy
+        
+    def setCopied(self, number):
+        self.values['copied'] = number
 
     def tc(self):
         return self.values['topCenter']
@@ -37,7 +47,12 @@ class PolygonCylinder():
         return self.values['h']
         
     def number(self):
-        return self.values['number']
+        responce = '0' * self.values['copied']
+        responce += str(self.values['number'])
+        return responce
+        
+    def setNumber(self, number):
+        self.values['number'] = number
         
     def facets(self):
         return self.values['facets']
@@ -68,7 +83,7 @@ class PolygonCylinder():
         f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
                                                                         self.values['topCenter'].y(),
                                                                         self.values['topCenter'].z(),
-                                                                        self.values['number']))
+                                                                        self.number()))
         f.write('{0}, {1}, {2}) '.format(self.values['topCenter'].x() - self.values['botCenter'].x(),
                                          self.values['topCenter'].y() - self.values['botCenter'].y(),
                                          self.values['topCenter'].z() - self.values['botCenter'].z()))
