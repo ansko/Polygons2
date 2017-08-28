@@ -26,6 +26,14 @@ class PolygonCylinderInTheShell(PolygonCylinder):
 
     def printToCSG(self, f):
         o = Options()
+        l = o.getProperty('cubeEdgeLength')
+        h = 0.01
+        cellString = ' and plane(0, 0, {0}; 0, 0, {0})'.format(l - h)
+        cellString += ' and plane(0, {0}, 0; 0, {0}, 0)'.format(l - h)
+        cellString += ' and plane({0}, 0, 0; {0}, 0, 0)'.format(l - h)
+        cellString += ' and plane({1}, {1}, {1}; 0, 0, -{0})'.format(l - h, h)
+        cellString += ' and plane({1}, {1}, {1}; 0, -{0}, 0)'.format(l - h, h)
+        cellString += ' and plane({1}, {1}, {1}; -{0}, 0, 0)'.format(l - h, h)
         h = o.getProperty('polygonalDiskThickness')
         maxhFiller = o.getProperty('maxh_f')
         f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
@@ -48,6 +56,7 @@ class PolygonCylinderInTheShell(PolygonCylinder):
             c = self.c()
             dfc = facet - c
             f.write('{0}, {1}, {2})'.format(dfc.x(), dfc.y(), dfc.z()))
+        f.write(cellString)
         f.write(';\n')
         s = o.getProperty('shellThickness')
         v = Vector(self.bc(), self.tc())
@@ -76,6 +85,7 @@ class PolygonCylinderInTheShell(PolygonCylinder):
                                                         c.y() + vToFacet.y(),
                                                         c.z() + vToFacet.z()))
             f.write('{0}, {1}, {2})'.format(vToFacet.x(), vToFacet.y(), vToFacet.z()))
+        f.write(cellString)
         f.write(';\n')
 
     def findBorders(self):

@@ -31,8 +31,14 @@ def mainExfoliation():
     maxAttempts = o.getProperty('maxAttempts')
     pcs = []
     l = o.getProperty('cubeEdgeLength')
-    cellString = 'solid cell = orthobrick(0, 0, 0;'
-    cellString += ' {0}, {0}, {0});\n'.format(l)
+    #cellString = 'solid cell = orthobrick(0, 0, 0;'
+    #cellString += ' {0}, {0}, {0});\n'.format(l)
+    cellString = 'solid cell = plane(0, 0, {0}; 0, 0, {0})'.format(l)
+    cellString += ' and plane(0, {0}, 0; 0, {0}, 0)'.format(l)
+    cellString += ' and plane({0}, 0, 0; {0}, 0, 0)'.format(l)
+    cellString += ' and plane(0, 0, 0; 0, 0, -{0})'.format(l)
+    cellString += ' and plane(0, 0, 0; 0, -{0}, 0)'.format(l)
+    cellString += ' and plane(0, 0, 0; -{0}, 0, 0);\n'.format(l)
     matrixString = 'solid matrix = cell'
     attempt = 0
     v = o.getProperty('verticesNumber')
@@ -41,9 +47,6 @@ def mainExfoliation():
     ready = 0
     tmpPcs = []
     while ready < desiredDisksNumber and attempt < maxAttempts:
-        #print('Start of attempt {0} ready {1} of {2}'.format(attempt + 1,
-        #                                                     len(pcs) / 27,
-         #                                                    desiredDisksNumber))
         attempt += 1
         if len(pcs) > 0:
             name = int(pcs[len(pcs) - 1].number()) + 1
@@ -119,19 +122,9 @@ def mainExfoliation():
                     toPop.append(i)
         for i in toPop[::-1]:
             pcs.pop(i)
-                
         print('End of attempt   {0} ready {1} of {2}'.format(attempt,
                                                              ready,
                                                              desiredDisksNumber))
-    print('Removing excess, len is {}'.format(len(pcs)))
-#    toPop = []
-#    for i, pc in enumerate(pcs):
-#        c = pc.c()
-#        if not 0 < c.x() < l or not 0 < c.y() < l or not 0 < c.z() < l:
-#            if not boxCrossByDiskInTheShell(pc):
-#                toPop.append(i)
-#    for i in toPop[::-1]:
-#        pcs.pop(i)
     print('Checking for percolation len is {}'.format(len(pcs)))
     checkPercolation(pcs)
     matrixString += ' and not filler and not shell;\ntlo matrix -transparent -maxh={0};\n'.format(maxhMatrix)
@@ -149,13 +142,16 @@ def mainExfoliation():
             else:
                 fillerString += ' polygonalDisk{0}'.format(pc.number())
                 shellString += ' pdShell{0}'.format(pc.number())
-        fillerString += ') and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo filler -maxh={0};\n'.format(maxhFiller)
-        shellString += ') and not filler and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo shell -maxh={0};\n'.format(maxhShell)
+        #fillerString += ') and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo filler -maxh={0};\n'.format(maxhFiller)
+        fillerString += ');\ntlo filler -maxh={0};\n'.format(maxhFiller)
+        #shellString += ') and not filler and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo shell -maxh={0};\n'.format(maxhShell)
+        shellString += ') and not filler;\ntlo shell -maxh={0};\n'.format(maxhShell)
         f.write(fillerString)
         f.write(shellString)
     f.write(matrixString)
     print('Volume fraction is {}'.format(ready * math.pi * r**2 * h / l**3))
     mp = MatricesPrinter(pcs)
     pp = PropertiesPrinter(pcs)
+
     
 mainExfoliation()
