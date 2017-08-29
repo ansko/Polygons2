@@ -109,7 +109,7 @@ def mainExfoliation():
         flag = 0
         for oldPc in pcs:
             for pc in tmpPcs:
-                if disksCross(oldPc, pc) or diskDiskInTheShellCross(oldPc, pc) or diskDiskInTheShellCross(pc, oldPc):
+                if disksCross(oldPc, pc) or disksCross(pc, oldPc) or diskDiskInTheShellCross(oldPc, pc) or diskDiskInTheShellCross(pc, oldPc):
                     flag = 1
                     break
         if flag != 1:

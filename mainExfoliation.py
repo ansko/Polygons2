@@ -28,8 +28,6 @@ def mainExfoliation():
     maxhFiller = o.getProperty('maxh_f')
     pcs = []
     l = o.getProperty('cubeEdgeLength')
-    matrixString = 'solid matrix = orthobrick(0, 0, 0;'
-    matrixString += ' {0}, {0}, {0})'.format(l)
     attempt = 0
     v = o.getProperty('verticesNumber')
     r = o.getProperty('polygonalDiskRadius')
@@ -94,7 +92,7 @@ def mainExfoliation():
     cellString += ' and plane(0, 0, 0; 0, 0, -{0})'.format(l)
     cellString += ' and plane(0, 0, 0; 0, -{0}, 0)'.format(l)
     cellString += ' and plane(0, 0, 0; -{0}, 0, 0);\n'.format(l)
-    matrixString = 'solid matrix = cell'
+    matrixString = 'solid matrix = cell and not filler'
     f.write(cellString)
     if len(pcs) > 0:
         fillerString = 'solid filler = cell and ('
