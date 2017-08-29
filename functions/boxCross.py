@@ -6,6 +6,7 @@ from Classes.Vector import Vector
 
 def boxCross(disk):
     o = Options()
+    additiionalEmptiness = max(o.getProperty('maxh_f'), o.getProperty('maxh_sh'), o.getProperty('maxh_m'))
     length = o.getProperty('cubeEdgeLength')
     c = disk.c()
     tc = disk.tc()
@@ -23,28 +24,16 @@ def boxCross(disk):
         vInFacet = vInFacet * (needLength / realLength)
         x4 = facet + vInFacet
         x5 = facet - vInFacet
-        if 0 > x4.x() or x5.x() < 0:
-            responce += '1'
-        else:
-            responce += '0'
-        if 0 > x4.y() or x5.y() < 0:
-            responce += '1'
-        else:
-            responce += '0'
-        if 0 > x4.z() or x5.z():
-            responce += '1'
-        else:
-            responce += '0'
-        if x4.x() > length or x5.x() > length:
-            responce += '1'
-        else:
-            responce += '0'
-        if x4.y() > length or x5.y() > length:
-            responce += '1'
-        else:
-            responce += '0'
-        if x4.z() > length or x5.z() > length:
-            responce += '1'
-        else:
-            responce += '0'
-    return responce
+        if additiionalEmptiness > x4.x() or x5.x() < additiionalEmptiness:
+            return True
+        if additiionalEmptiness > x4.y() or x5.y() < additiionalEmptiness:
+            return True
+        if additiionalEmptiness > x4.z() or x5.z() < additiionalEmptiness:
+            return True
+        if x4.x() > length - additiionalEmptiness or x5.x() > length - additiionalEmptiness:
+            return True
+        if x4.y() > length - additiionalEmptiness or x5.y() > length - additiionalEmptiness:
+            return True
+        if x4.z() > length - additiionalEmptiness or x5.z() > length - additiionalEmptiness:
+            return True
+    return False

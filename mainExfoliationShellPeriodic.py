@@ -7,6 +7,9 @@ import numpy as np
 import random
 from datetime import datetime
 
+import pprint
+pprint = pprint.PrettyPrinter(indent=4).pprint
+
 from Classes.MatricesPrinter import MatricesPrinter
 from Classes.Options import Options
 from Classes.Point import Point
@@ -19,7 +22,7 @@ from functions.boxCrossByDiskInTheShell import boxCrossByDiskInTheShell
 from functions.checkPercolation import checkPercolation
 from functions.diskDiskInTheShellCross import diskDiskInTheShellCross
 from functions.disksCross import disksCross
-from functions.disksInTheShellCross import disksInTheShellCross
+from functions.disksInTheShellCross2 import disksInTheShellCross
 
 
 def mainExfoliation():
@@ -126,6 +129,8 @@ def mainExfoliation():
                                                              ready,
                                                              desiredDisksNumber))
     print('Checking for percolation len is {}'.format(len(pcs)))
+    for pc in pcs:
+        print(pc)
     checkPercolation(pcs)
     matrixString += ' and not filler and not shell;\ntlo matrix -transparent -maxh={0};\n'.format(maxhMatrix)
     f = open(o.getProperty('fname'), 'w')
@@ -140,11 +145,9 @@ def mainExfoliation():
                 fillerString += ' or polygonalDisk{0}'.format(pc.number())
                 shellString += ' or pdShell{0}'.format(pc.number())
             else:
-                fillerString += ' polygonalDisk{0}'.format(pc.number())
-                shellString += ' pdShell{0}'.format(pc.number())
-        #fillerString += ') and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo filler -maxh={0};\n'.format(maxhFiller)
+                fillerString += 'polygonalDisk{0}'.format(pc.number())
+                shellString += 'pdShell{0}'.format(pc.number())
         fillerString += ');\ntlo filler -maxh={0};\n'.format(maxhFiller)
-        #shellString += ') and not filler and orthobrick(0.01,  0.01, 0.01; 9.99, 9.99, 9.99);\ntlo shell -maxh={0};\n'.format(maxhShell)
         shellString += ') and not filler;\ntlo shell -maxh={0};\n'.format(maxhShell)
         f.write(fillerString)
         f.write(shellString)

@@ -32,7 +32,7 @@ def mainExfoliation():
     l = o.getProperty('cubeEdgeLength')
     cellString = 'solid cell = orthobrick(0, 0, 0;'
     cellString += ' {0}, {0}, {0});\n'.format(l)
-    matrixString = 'solid matrix = cell'
+    matrixString = 'solid matrix = cell and not filler'
     attempt = 0
     v = o.getProperty('verticesNumber')
     r = o.getProperty('polygonalDiskRadius')

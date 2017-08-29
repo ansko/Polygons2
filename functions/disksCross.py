@@ -22,6 +22,7 @@ def disksCross(disk1, disk2):
         return False
     elif h > l:
         return True
+    # http://mathworld.wolfram.com/Line-PlaneIntersection.html
     # facet of disk2 and top or bottom of disk1
     vtb1 = Vector(bc1, tc1)
     tc2 = disk2.tc()

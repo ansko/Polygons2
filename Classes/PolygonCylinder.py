@@ -28,6 +28,9 @@ class PolygonCylinder():
             copy.changeByMatrix(transformation)
         return copy
         
+    def __str__(self):
+        return '{0} {1} {2} r={3} h={4}'.format(self.c().x(), self.c().y(), self.c().z(), self.r(), self.h())
+        
     def setCopied(self, number):
         self.values['copied'] = number
 
@@ -100,5 +103,6 @@ class PolygonCylinder():
             c = self.c()
             dfc = facet - c
             f.write('{0}, {1}, {2})'.format(dfc.x(), dfc.y(), dfc.z()))
-        f.write(';\ntlo polygonalDisk{0} -maxh={1};\n'.format(self.number(),
-                                                              maxhFiller))
+        #f.write(';\ntlo polygonalDisk{0} -maxh={1};\n'.format(self.number(),
+        #                                                      maxhFiller))
+        f.write(';\n')

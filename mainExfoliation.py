@@ -24,6 +24,8 @@ def mainExfoliation():
     maxhMatrix = o.getProperty('maxh_m')
     desiredDisksNumber = int(o.getProperty('numberOfDisks'))
     maxAttempts = o.getProperty('maxAttempts')
+    maxhMatrix = o.getProperty('maxh_m')
+    maxhFiller = o.getProperty('maxh_f')
     pcs = []
     l = o.getProperty('cubeEdgeLength')
     matrixString = 'solid matrix = orthobrick(0, 0, 0;'
@@ -33,9 +35,9 @@ def mainExfoliation():
     r = o.getProperty('polygonalDiskRadius')
     h = o.getProperty('polygonalDiskThickness')
     while len(pcs) < desiredDisksNumber and attempt < maxAttempts:
-        print('Start of attempt {0} ready {1} of {2}'.format(attempt + 1,
-                                                             len(pcs),
-                                                             desiredDisksNumber))
+        #print('Start of attempt {0} ready {1} of {2}'.format(attempt + 1,
+        #                                                     len(pcs),
+        #                                                     desiredDisksNumber))
         attempt += 1
         pc = PolygonCylinder(r, h, len(pcs), int(v))
         random.seed(datetime.now())
@@ -77,19 +79,34 @@ def mainExfoliation():
         if boxCross(pc):
             continue
         for oldPc in pcs:
-            if disksCross(oldPc, pc):
+            if disksCross(oldPc, pc) or disksCross(pc, oldPc):
                 flag = 1
         if flag == 0:
             pcs.append(pc)
-            matrixString += ' and not polygonalDisk' + str(len(pcs) - 1)
         print('End of attempt   {0} ready {1} of {2}'.format(attempt,
                                                            len(pcs),
                                                            desiredDisksNumber))
-    matrixString += ';\ntlo matrix -transparent -maxh={0};'.format(maxhMatrix)
     f = open(o.getProperty('fname'), 'w')
     f.write('algebraic3d\n')
-    for pc in pcs:
-        pc.printToCSG(f)
+    cellString = 'solid cell = plane(0, 0, {0}; 0, 0, {0})'.format(l)
+    cellString += ' and plane(0, {0}, 0; 0, {0}, 0)'.format(l)
+    cellString += ' and plane({0}, 0, 0; {0}, 0, 0)'.format(l)
+    cellString += ' and plane(0, 0, 0; 0, 0, -{0})'.format(l)
+    cellString += ' and plane(0, 0, 0; 0, -{0}, 0)'.format(l)
+    cellString += ' and plane(0, 0, 0; -{0}, 0, 0);\n'.format(l)
+    matrixString = 'solid matrix = cell'
+    f.write(cellString)
+    if len(pcs) > 0:
+        fillerString = 'solid filler = cell and ('
+        for i, pc in enumerate(pcs):
+            pc.printToCSG(f)
+            if i != 0:
+                fillerString += ' or polygonalDisk{0}'.format(pc.number())
+            else:
+                fillerString += 'polygonalDisk{0}'.format(pc.number())
+        fillerString += ');\ntlo filler -maxh={0};\n'.format(maxhFiller)
+        f.write(fillerString)
+    matrixString += ';\ntlo matrix -transparent -maxh={0};'.format(maxhMatrix)
     f.write(matrixString)
     print('Volume fraction is {}'.format(len(pcs) * math.pi * r**2 * h / l**3))
     mp = MatricesPrinter(pcs)
