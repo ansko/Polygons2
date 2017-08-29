@@ -30,7 +30,9 @@ class PropertiesPrinter():
                 for j in range(3):		
                     for k in range(3):		
                         for l in range(3):		
-                            C[i][j][k][l] = la * delta(i, j) * delta(k, l) + mu * (delta(i, k) * delta(j, l) + delta(i, l) * delta(j, k))  		
+                            C[i][j][k][l] = la * delta(i, j) * delta(k, l) 
+                            C[i][j][k][l] += mu * delta(i, k) * delta(j, l)
+                            C[i][j][k][l] += mu * delta(i, l) * delta(j, k)
                             f.write(str(C[i][j][k][l]) + ' ')
             f.write('\n')
         #for particle in range(len(disks)):
@@ -41,7 +43,9 @@ class PropertiesPrinter():
                 for j in range(3):		
                     for k in range(3):		
                         for l in range(3):		
-                            C[i][j][k][l] = la * delta(i, j) * delta(k, l) + mu * (delta(i, k) * delta(j, l) + delta(i, l) * delta(j, k))
+                            C[i][j][k][l] = la * delta(i, j) * delta(k, l)
+                            C[i][j][k][l] += mu * delta(i, k) * delta(j, l)
+                            C[i][j][k][l] += mu * delta(i, l) * delta(j, k)
                             f.write(str(C[i][j][k][l]) + ' ')
             f.write('\n')
         la = E_m * nu_m / (1.0 - 2 * nu_m) / (1 + nu_m)		
@@ -50,5 +54,7 @@ class PropertiesPrinter():
             for j in range(3):		
                 for k in range(3):		
                     for l in range(3):		
-                        C[i][j][k][l] = la * delta(i, j) * delta(k, l) + mu * (delta(i, k) * delta(j, l) + delta(i, l) * delta(j, k))     		
+                        C[i][j][k][l] = la * delta(i, j) * delta(k, l)
+                        C[i][j][k][l] += mu * delta(i, k) * delta(j, l) 
+                        C[i][j][k][l] += mu * delta(i, l) * delta(j, k)
                         f.write(str(C[i][j][k][l]) + ' ')

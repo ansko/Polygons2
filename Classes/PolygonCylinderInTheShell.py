@@ -13,7 +13,8 @@ class PolygonCylinderInTheShell(PolygonCylinder):
         self.values['neighborsAreMainWithMe'] = []
         
     def __copy__(self):
-        copy = PolygonCylinderInTheShell(self.r(), self.h(), self.number(), len(self.facets()))
+        copy = PolygonCylinderInTheShell(self.r(), self.h(),
+                                         self.number(), len(self.facets()))
         for transformation in self.transformationHistory():
             copy.changeByMatrix(transformation)
         return copy
@@ -36,19 +37,27 @@ class PolygonCylinderInTheShell(PolygonCylinder):
         cellString += ' and plane({1}, {1}, {1}; -{0}, 0, 0)'.format(l - h, h)
         h = o.getProperty('polygonalDiskThickness')
         maxhFiller = o.getProperty('maxh_f')
-        f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
-                                                                        self.values['topCenter'].y(),
-                                                                        self.values['topCenter'].z(),
-                                                                        self.number()))
-        f.write('{0}, {1}, {2}) '.format(self.values['topCenter'].x() - self.values['botCenter'].x(),
-                                         self.values['topCenter'].y() - self.values['botCenter'].y(),
-                                         self.values['topCenter'].z() - self.values['botCenter'].z()))
-        f.write('and plane({0}, {1}, {2}; '.format(self.values['botCenter'].x(),
-                                                   self.values['botCenter'].y(),
-                                                   self.values['botCenter'].z()))
-        f.write('{0}, {1}, {2})'.format(-self.values['topCenter'].x() + self.values['botCenter'].x(),
-                                        -self.values['topCenter'].y() + self.values['botCenter'].y(),
-                                        -self.values['topCenter'].z() + self.values['botCenter'].z()))
+        st = 'solid polygonalDisk{3} = plane({0}, {1}, {2}; '
+        f.write(st.format(self.values['topCenter'].x(),
+                          self.values['topCenter'].y(),
+                          self.values['topCenter'].z(),
+                          self.number()))
+        dx = self.values['topCenter'].x() - self.values['botCenter'].x()
+        dy = self.values['topCenter'].y() - self.values['botCenter'].y()
+        dz = self.values['topCenter'].z() - self.values['botCenter'].z()
+        f.write('{0}, {1}, {2}) '.format(dx,
+                                         dy,
+                                         dz))
+        st = 'and plane({0}, {1}, {2}; '
+        f.write(st.format(self.values['botCenter'].x(),
+                          self.values['botCenter'].y(),
+                          self.values['botCenter'].z()))
+        dx = -self.values['topCenter'].x() + self.values['botCenter'].x()
+        dy = -self.values['topCenter'].y() + self.values['botCenter'].y()
+        dz = -self.values['topCenter'].z() + self.values['botCenter'].z()
+        f.write('{0}, {1}, {2})'.format(dx,
+                                        dy,
+                                        dz))
         for facet in self.values['facets']:
             f.write(' and plane({0}, {1}, {2}; '.format(facet.x(),
                                                         facet.y(),
@@ -62,10 +71,11 @@ class PolygonCylinderInTheShell(PolygonCylinder):
         v = Vector(self.bc(), self.tc())
         v = v * (2 * s + h) / 2 / h
         pt = self.bc()/2 + self.tc()/2 + v
-        f.write('solid pdShell{0} = plane({1}, {2}, {3}; '.format(self.number(),
-                                                                  pt.x(),
-                                                                  pt.y(),
-                                                                  pt.z()))
+        st = 'solid pdShell{0} = plane({1}, {2}, {3}; '
+        f.write(st.format(self.number(),
+                          pt.x(),
+                          pt.y(),
+                          pt.z()))
         f.write('{0}, {1}, {2}) '.format(v.x(),
                                          v.y(),
                                          v.z()))
@@ -84,7 +94,8 @@ class PolygonCylinderInTheShell(PolygonCylinder):
             f.write(' and plane({0}, {1}, {2}; '.format(c.x() + vToFacet.x(),
                                                         c.y() + vToFacet.y(),
                                                         c.z() + vToFacet.z()))
-            f.write('{0}, {1}, {2})'.format(vToFacet.x(), vToFacet.y(), vToFacet.z()))
+            f.write('{0}, {1}, {2})'.format(vToFacet.x(),
+                                            vToFacet.y(), vToFacet.z()))
         f.write(cellString)
         f.write(';\n')
 

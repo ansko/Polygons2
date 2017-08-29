@@ -6,7 +6,9 @@ from Classes.Vector import Vector
 
 def boxCross(disk):
     o = Options()
-    additiionalEmptiness = max(o.getProperty('maxh_f'), o.getProperty('maxh_sh'), o.getProperty('maxh_m'))
+    additiionalEmptiness = max(o.getProperty('maxh_f'),  # t oavoid errors
+                               o.getProperty('maxh_sh'), # in netgen nesh
+                               o.getProperty('maxh_m'))  # generation
     length = o.getProperty('cubeEdgeLength')
     c = disk.c()
     tc = disk.tc()
@@ -30,10 +32,13 @@ def boxCross(disk):
             return True
         if additiionalEmptiness > x4.z() or x5.z() < additiionalEmptiness:
             return True
-        if x4.x() > length - additiionalEmptiness or x5.x() > length - additiionalEmptiness:
+        if x4.x() > length - additiionalEmptiness or\
+           x5.x() > length - additiionalEmptiness:
             return True
-        if x4.y() > length - additiionalEmptiness or x5.y() > length - additiionalEmptiness:
+        if x4.y() > length - additiionalEmptiness or\
+           x5.y() > length - additiionalEmptiness:
             return True
-        if x4.z() > length - additiionalEmptiness or x5.z() > length - additiionalEmptiness:
+        if x4.z() > length - additiionalEmptiness or\
+           x5.z() > length - additiionalEmptiness:
             return True
     return False

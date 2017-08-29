@@ -33,9 +33,6 @@ def mainExfoliation():
     r = o.getProperty('polygonalDiskRadius')
     h = o.getProperty('polygonalDiskThickness')
     while len(pcs) < desiredDisksNumber and attempt < maxAttempts:
-        #print('Start of attempt {0} ready {1} of {2}'.format(attempt + 1,
-        #                                                     len(pcs),
-        #                                                     desiredDisksNumber))
         attempt += 1
         pc = PolygonCylinder(r, h, len(pcs), int(v))
         random.seed(datetime.now())

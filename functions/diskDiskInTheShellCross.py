@@ -67,6 +67,7 @@ def diskDiskInTheShellCross(disk1, disk2):
                         return True
                 elif det1 < -epsilon:
                     v45 = Vector(x4, x5)
-                    if Vector(x1, x4 + v45 * abs(det1) / (abs(det1) + abs(det2))).l() < r:
+                    pti =  x4 + v45 * abs(det1) / (abs(det1) + abs(det2))
+                    if Vector(x1, pti).l() < r:
                         return True
     return False

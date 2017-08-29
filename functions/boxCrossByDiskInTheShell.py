@@ -33,15 +33,21 @@ def boxCrossByDiskInTheShell(disk):
         x4 = ptOnFacet - vInFacet - vtb / 2
         if x1.x() * x2.x() < 0 or x1.x() * x3.x() < 0 or x1.x() * x4.x() < 0:
             ifcrossx = True
-        if (x1.x() - length) * (x2.x() - length) < 0 or (x1.x() - length) * (x3.x() - length) < 0 or (x1.x() - length) * (x4.x() - length) < 0:
+        if (x1.x() - length) * (x2.x() - length) < 0 or\
+           (x1.x() - length) * (x3.x() - length) < 0 or\
+           (x1.x() - length) * (x4.x() - length) < 0:
             ifcrossx = True
         if x1.y() * x2.y() < 0 or x1.y() * x3.y() < 0 or x1.y() * x4.y() < 0:
             ifcrossy = True
-        if (x1.y() - length) * (x2.y() - length) < 0 or (x1.y() - length) * (x3.y() - length) < 0 or (x1.y() - length) * (x4.y() - length) < 0:
+        if (x1.y() - length) * (x2.y() - length) < 0 or\
+           (x1.y() - length) * (x3.y() - length) < 0 or\
+           (x1.y() - length) * (x4.y() - length) < 0:
             ifcrossy = True
         if x1.z() * x2.z() < 0 or x1.z() * x3.z() < 0 or x1.z() * x4.z() < 0:
             ifcrossz = True
-        if (x1.z() - length) * (x2.z() - length) < 0 or (x1.z() - length) * (x3.z() - length) < 0 or (x1.z() - length) * (x4.z() - length) < 0:
+        if (x1.z() - length) * (x2.z() - length) < 0 or\
+           (x1.z() - length) * (x3.z() - length) < 0 or\
+           (x1.z() - length) * (x4.z() - length) < 0:
             ifcrossz = True
         if ifcrossx and not ifcrossy and not ifcrossz:
             if 0 < c.y() < length and 0 < c.z() < length:

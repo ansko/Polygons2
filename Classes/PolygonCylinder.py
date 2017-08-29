@@ -23,13 +23,16 @@ class PolygonCylinder():
             self.values['facets'].append(facet)
             
     def __copy__(self):
-        copy = PolygonCylinder(self.r(), self.h(), self.number(), len(self.facets()))
+        copy = PolygonCylinder(self.r(), self.h(), 
+                               self.number(), len(self.facets()))
         for transformation in self.transformationHistory():
             copy.changeByMatrix(transformation)
         return copy
         
     def __str__(self):
-        return '{0} {1} {2} r={3} h={4}'.format(self.c().x(), self.c().y(), self.c().z(), self.r(), self.h())
+        s = '{0} {1} {2} r={3} h={4}'
+        return s.format(self.c().x(), self.c().y(),
+                        self.c().z(), self.r(), self.h())
         
     def setCopied(self, number):
         self.values['copied'] = number
@@ -83,19 +86,28 @@ class PolygonCylinder():
     def printToCSG(self, f):
         o = Options()
         maxhFiller = o.getProperty('maxh_f')
-        f.write('solid polygonalDisk{3} = plane({0}, {1}, {2}; '.format(self.values['topCenter'].x(),
-                                                                        self.values['topCenter'].y(),
-                                                                        self.values['topCenter'].z(),
-                                                                        self.number()))
-        f.write('{0}, {1}, {2}) '.format(self.values['topCenter'].x() - self.values['botCenter'].x(),
-                                         self.values['topCenter'].y() - self.values['botCenter'].y(),
-                                         self.values['topCenter'].z() - self.values['botCenter'].z()))
-        f.write('and plane({0}, {1}, {2}; '.format(self.values['botCenter'].x(),
-                                                   self.values['botCenter'].y(),
-                                                   self.values['botCenter'].z()))
-        f.write('{0}, {1}, {2})'.format(-self.values['topCenter'].x() + self.values['botCenter'].x(),
-                                        -self.values['topCenter'].y() + self.values['botCenter'].y(),
-                                        -self.values['topCenter'].z() + self.values['botCenter'].z()))
+        s = 'solid polygonalDisk{3} = plane({0}, {1}, {2}; '
+        f.write(s.format(self.values['topCenter'].x(),
+                         self.values['topCenter'].y(),
+                         self.values['topCenter'].z(),
+                         self.number()))
+        s = '{0}, {1}, {2}) '
+        dx = self.values['topCenter'].x() - self.values['botCenter'].x()
+        dy = self.values['topCenter'].y() - self.values['botCenter'].y()
+        dz = self.values['topCenter'].z() - self.values['botCenter'].z()
+        f.write(s.format(dx,
+                         dy,
+                         dz))
+        s = 'and plane({0}, {1}, {2}; '
+        f.write(s.format(self.values['botCenter'].x(),
+                         self.values['botCenter'].y(),
+                         self.values['botCenter'].z()))
+        dx = -self.values['topCenter'].x() + self.values['botCenter'].x()
+        dy = -self.values['topCenter'].y() + self.values['botCenter'].y()
+        dz = -self.values['topCenter'].z() + self.values['botCenter'].z()
+        f.write('{0}, {1}, {2})'.format(dx,
+                                        dy,
+                                        dz))
         for facet in self.values['facets']:
             f.write(' and plane({0}, {1}, {2}; '.format(facet.x(),
                                                         facet.y(),
@@ -103,6 +115,4 @@ class PolygonCylinder():
             c = self.c()
             dfc = facet - c
             f.write('{0}, {1}, {2})'.format(dfc.x(), dfc.y(), dfc.z()))
-        #f.write(';\ntlo polygonalDisk{0} -maxh={1};\n'.format(self.number(),
-        #                                                      maxhFiller))
         f.write(';\n')

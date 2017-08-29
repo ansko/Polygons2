@@ -3,7 +3,7 @@ pprint=pprint.PrettyPrinter(indent=4).pprint
 
 from Classes.Options import Options
 
-from functions.disksInTheShellCross2 import disksInTheShellCross
+from functions.disksInTheShellCross import disksInTheShellCross
 
 
 def checkPercolation(pcs):

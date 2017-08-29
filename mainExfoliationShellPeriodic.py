@@ -22,7 +22,7 @@ from functions.boxCrossByDiskInTheShell import boxCrossByDiskInTheShell
 from functions.checkPercolation import checkPercolation
 from functions.diskDiskInTheShellCross import diskDiskInTheShellCross
 from functions.disksCross import disksCross
-from functions.disksInTheShellCross2 import disksInTheShellCross
+from functions.disksInTheShellCross import disksInTheShellCross
 
 
 def mainExfoliation():
@@ -109,7 +109,10 @@ def mainExfoliation():
         flag = 0
         for oldPc in pcs:
             for pc in tmpPcs:
-                if disksCross(oldPc, pc) or disksCross(pc, oldPc) or diskDiskInTheShellCross(oldPc, pc) or diskDiskInTheShellCross(pc, oldPc):
+                if disksCross(oldPc, pc) or\
+                   disksCross(pc, oldPc) or\
+                   diskDiskInTheShellCross(oldPc, pc) or\
+                   diskDiskInTheShellCross(pc, oldPc):
                     flag = 1
                     break
         if flag != 1:
@@ -125,14 +128,14 @@ def mainExfoliation():
                     toPop.append(i)
         for i in toPop[::-1]:
             pcs.pop(i)
-        print('End of attempt   {0} ready {1} of {2}'.format(attempt,
-                                                             ready,
-                                                             desiredDisksNumber))
+        s = 'End of attempt   {0} ready {1} of {2}'
+        print(s.format(attempt, ready, desiredDisksNumber))
     print('Checking for percolation len is {}'.format(len(pcs)))
     for pc in pcs:
         print(pc)
     checkPercolation(pcs)
-    matrixString += ' and not filler and not shell;\ntlo matrix -transparent -maxh={0};\n'.format(maxhMatrix)
+    s = ' and not filler and not shell;\ntlo matrix -transparent -maxh={0};\n'
+    matrixString += s.format(maxhMatrix)
     f = open(o.getProperty('fname'), 'w')
     f.write('algebraic3d\n')
     f.write(cellString)
@@ -148,7 +151,8 @@ def mainExfoliation():
                 fillerString += 'polygonalDisk{0}'.format(pc.number())
                 shellString += 'pdShell{0}'.format(pc.number())
         fillerString += ');\ntlo filler -maxh={0};\n'.format(maxhFiller)
-        shellString += ') and not filler;\ntlo shell -maxh={0};\n'.format(maxhShell)
+        s = ') and not filler;\ntlo shell -maxh={0};\n'
+        shellString += s.format(maxhShell)
         f.write(fillerString)
         f.write(shellString)
     f.write(matrixString)
