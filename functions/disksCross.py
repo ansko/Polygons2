@@ -5,6 +5,8 @@ from Classes.Options import Options
 from Classes.Point import Point
 from Classes.Vector import Vector
 
+from functions.utils import decompose
+
 
 def disksCross(disk1, disk2):
     o = Options()
@@ -70,4 +72,65 @@ def disksCross(disk1, disk2):
                     pti = x4 + v45 * abs(det1) / (abs(det1) + abs(det2))
                     if Vector(x1, pti).l() < r:
                         return True
+                        
+    for facet1 in disk1.facets():
+        x1 = facet1
+        vToFacet1 = Vector(x1, c1)
+        vInFacet1 = vtb1.vectorMultiply(vToFacet1)
+        needLength = r * math.tan(math.pi / v)
+        realLength = vInFacet1.l()
+        vInFacet *= needLength / realLength
+        x2 = x1 + vInFacet + vtb1 / 2
+        x3 = x1 - vInFacet + vtb1 / 2
+        v12 = Vector(x2, x1)
+        v32 = Vector(x2, x3)
+        for facet2 in disk2.facets():
+            vToFacet = Vector(c2, facet)
+            vInFacet = vtb2.vectorMultiply(vToFacet)
+            realLength = vInFacet.l()
+            needLength = r * math.tan(math.pi / v) 
+            vInFacet = vInFacet * (needLength / realLength)
+            for (x4, x5) in [(facet + vInFacet + vtb2 / 2, # top edge
+                              facet - vInFacet + vtb2 / 2),
+                             (facet + vInFacet - vtb2 / 2, # bottom edge
+                              facet - vInFacet - vtb2 / 2)]:
+                v42 = Vector(x4, x2)
+                v52 = Vector(x5, x2)
+                det1 = np.linalg.det(np.array([
+                                               [v12.x(), v12.y(), v12.z()],
+                                               [v32.x(), v32.y(), v32.z()],
+                                               [v42.x(), v42.y(), v42.z()]
+                                              ]))
+                det2 = np.linalg.det(np.array([
+                                               [v12.x(), v12.y(), v12.z()],
+                                               [v32.x(), v32.y(), v32.z()],
+                                               [v52.x(), v52.y(), v52.z()]
+                                              ]))
+                if -epsilon < det1 < epsilon:
+                    xi = x4
+                    vectori = Vector(x1, xi)
+                    cos = (abs(vectori.x() * vtb1.x() + vectori.y() * vtb1.y() + vectori/z() * vtb1/z())) / vectori.l() / vtb1.l()
+                    sin = (1 - cos**2)**0.5
+                    axelen = cos * vectori.l()
+                    norlen = sin * vectori.l()
+                    if axelen < (vtb1 / 2).l() and norlen < needLength:
+                         return True
+                elif -epsilon < det2 < epsilon :
+                    xi = x5
+                    vectori = Vector(x1, xi)
+                    cos = (abs(vectori.x() * vtb1.x() + vectori.y() * vtb1.y() + vectori/z() * vtb1/z())) / vectori.l() / vtb1.l()
+                    sin = (1 - cos**2)**0.5
+                    axelen = cos * vectori.l()
+                    norlen = sin * vectori.l()
+                    if axelen < (vtb1 / 2).l() and norlen < needLength:
+                         return True
+                elif det1 * det2 < -epsilon:
+                    xi = x4 + Vector(x4, x5) * (abs(det1)) / (abs(det1) + abs(det2))
+                    vectori = Vector(x1, xi)
+                    cos = (abs(vectori.x() * vtb1.x() + vectori.y() * vtb1.y() + vectori/z() * vtb1/z())) / vectori.l() / vtb1.l()
+                    sin = (1 - cos**2)**0.5
+                    axelen = cos * vectori.l()
+                    norlen = sin * vectori.l()
+                    if axelen < (vtb1 / 2).l() and norlen < needLength:
+                         return True
     return False

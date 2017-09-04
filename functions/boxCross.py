@@ -24,13 +24,21 @@ def boxCross(disk):
         realLength = vInFacet.l()
         needLength = r * math.tan(math.pi / v) 
         vInFacet = vInFacet * (needLength / realLength)
-        x4 = facet + vInFacet
-        x5 = facet - vInFacet
+        x4 = facet + vInFacet + vtb / 2
+        x5 = facet - vInFacet + vtb / 2
+        x6 = facet + vInFacet - vtb / 2
+        x7 = facet - vInFacet - vtb / 2
         if additiionalEmptiness > x4.x() or x5.x() < additiionalEmptiness:
+            return True
+        if additiionalEmptiness > x6.x() or x7.x() < additiionalEmptiness:
             return True
         if additiionalEmptiness > x4.y() or x5.y() < additiionalEmptiness:
             return True
+        if additiionalEmptiness > x6.y() or x7.y() < additiionalEmptiness:
+            return True
         if additiionalEmptiness > x4.z() or x5.z() < additiionalEmptiness:
+            return True
+        if additiionalEmptiness > x6.z() or x7.z() < additiionalEmptiness:
             return True
         if x4.x() > length - additiionalEmptiness or\
            x5.x() > length - additiionalEmptiness:
@@ -40,5 +48,14 @@ def boxCross(disk):
             return True
         if x4.z() > length - additiionalEmptiness or\
            x5.z() > length - additiionalEmptiness:
+            return True
+        if x6.x() > length - additiionalEmptiness or\
+           x7.x() > length - additiionalEmptiness:
+            return True
+        if x6.y() > length - additiionalEmptiness or\
+           x7.y() > length - additiionalEmptiness:
+            return True
+        if x6.z() > length - additiionalEmptiness or\
+           x7.z() > length - additiionalEmptiness:
             return True
     return False

@@ -21,6 +21,7 @@ from Classes.Vector import Vector
 
 from functions.boxCross import boxCross
 from functions.boxCrossByDiskInTheShell import boxCrossByDiskInTheShell
+from functions.checkMinimumDistance import checkMinimumDistance
 from functions.checkPercolation import checkPercolation
 from functions.diskDiskInTheShellCross import diskDiskInTheShellCross
 from functions.disksCross import disksCross
@@ -151,6 +152,19 @@ def mainExfoliation():
     f.write('algebraic3d\n')
     f.write(cellString)
     if len(pcs) > 0:
+        aveMinDistance = 0
+        minDistance = 1000000
+        for pc1 in pcs:
+            for pc2 in pcs:
+                if pc1 == pc2:
+                    continue
+                distance = checkMinimumDistance(pc1, pc2)
+                if distance < minDistance:
+                    minDistance = distance
+                aveMinDistance += distance
+        aveMinDistance /= len(pcs) * (len(pcs) - 1)
+        print('MinDistance = ', minDistance)
+        print('AveMinDistance = ', aveMinDistance)
         fillerString = 'solid filler = cell and ('
         shellString = 'solid shell = cell and ('
         for i, pc in enumerate(pcs):
